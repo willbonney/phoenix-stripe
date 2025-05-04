@@ -7,6 +7,8 @@ defmodule PhoenixStripe.Application do
 
   @impl true
   def start(_type, _args) do
+    Dotenv.load()
+
     children = [
       PhoenixStripeWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:phoenix_stripe, :dns_cluster_query) || :ignore},

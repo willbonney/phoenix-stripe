@@ -17,7 +17,15 @@ defmodule PhoenixStripeWeb.Router do
   scope "/", PhoenixStripeWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", ProjectLive.Index
+  end
+
+  scope "/api", PhoenixStripeWeb do
+    pipe_through :api
+
+    post "/create-checkout-session", StripeController, :create_checkout_session
+    post "/create-setup-intent", StripeController, :create_setup_intent
+    post "/create-payment-intent", StripeController, :create_payment_intent
   end
 
   # Other scopes may use custom stacks.
