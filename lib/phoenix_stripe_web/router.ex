@@ -23,8 +23,8 @@ defmodule PhoenixStripeWeb.Router do
   scope "/api", PhoenixStripeWeb do
     pipe_through :api
 
-    post "/create-checkout-session", StripeController, :create_checkout_session
-    post "/create-setup-intent", StripeController, :create_setup_intent
+    get "/stripe-key", StripeController, :publishable_key
+    post "/get-client-secret", StripeController, :get_client_secret
     post "/create-payment-intent", StripeController, :create_payment_intent
   end
 

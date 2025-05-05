@@ -21,8 +21,27 @@ defmodule PhoenixStripeWeb.ProjectLive.PaymentFormComponent do
           <!-- Stripe Elements will be inserted here -->
         </div>
         <div id="card-errors" class="mt-2 text-red-600" role="alert"></div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-          Pay Now
+        <button
+          type="submit"
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center min-w-[120px]"
+          disabled={@loading}
+        >
+          <%= if @loading do %>
+            <svg
+              class="animate-spin h-5 w-5 mr-2 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+              </circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
+              </path>
+            </svg>
+            Processing...
+          <% else %>
+            Pay Now
+          <% end %>
         </button>
       </form>
     </div>

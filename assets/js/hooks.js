@@ -1,6 +1,8 @@
 const PaymentFormStripe = {
-  mounted() {
-    const stripe = Stripe(window.stripePublishableKey);
+  async mounted() {
+    const response = await fetch('/api/stripe-key');
+    const { publishableKey } = await response.json();
+    const stripe = Stripe(publishableKey);
     const elements = stripe.elements();
     const card = elements.create('card');
     card.mount(this.el.querySelector('#card-element'));
@@ -14,8 +16,11 @@ const PaymentFormStripe = {
       }
     });
     form.addEventListener('submit', async (e) => {
+      
       e.preventDefault();
-      const {amount: {value: amount}} = form;
+      const amount = form.amount.value;
+      console.log("amount", amount);
+      this.pushEvent('set_loading', { loading: true });
       try {
         const setupResponse = await fetch('/api/create-setup-intent', {
           method: 'POST',
@@ -24,6 +29,7 @@ const PaymentFormStripe = {
           }
         });
         const { client_secret } = await setupResponse.json();
+        
         const { setupIntent, error } = await stripe.confirmCardSetup(client_secret, {
           payment_method: {
             card,
@@ -33,6 +39,7 @@ const PaymentFormStripe = {
           }
         });
         if (error) {
+          console.log("error", error);
           cardErrors.textContent = error.message;
           return;
         }
@@ -48,14 +55,13 @@ const PaymentFormStripe = {
         });
         const result = await paymentResponse.json();
         if (result.status === 'succeeded') {
-          this.pushEvent('payment_succeeded', { amount });
+          this.pushEvent('payment_succeeded', { amount, loading: false });
         } else {
-          this.pushEvent('payment_failed', { error: result.error });
+          throw new Error(result.error);
         }
       } catch (err) {
-        console.error('Error:', err);
-        this.pushEvent('payment_failed', { error: err.message });
-      }
+        this.pushEvent('payment_failed', { error: err.message, loading: false });
+      } 
     });
   }
 };

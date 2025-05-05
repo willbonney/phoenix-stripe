@@ -43,13 +43,13 @@
       const amount = form.amount.value;
 
       try {
-        const setupResponse = await fetch('/api/create-setup-intent', {
+        const setupResponse = await fetch('/api/get-client-secret', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           }
         });
-        
+
         const { client_secret } = await setupResponse.json();
 
         const { setupIntent, error } = await stripe.confirmCardSetup(client_secret, {

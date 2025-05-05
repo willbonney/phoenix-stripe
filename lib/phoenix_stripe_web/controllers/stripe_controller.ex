@@ -1,9 +1,8 @@
 defmodule PhoenixStripeWeb.StripeController do
   use PhoenixStripeWeb, :controller
 
-  def create_setup_intent(conn, _params) do
+  def get_client_secret(conn, _params) do
     api_key = System.get_env("STRIPE_SECRET_KEY")
-    IO.inspect(api_key, label: "Stripe Secret Key")
 
     case Stripe.SetupIntent.create(%{}, api_key: api_key) do
       {:ok, setup_intent} ->
@@ -16,6 +15,7 @@ defmodule PhoenixStripeWeb.StripeController do
     end
   end
 
+  @spec create_payment_intent(any(), map()) :: Plug.Conn.t()
   def create_payment_intent(conn, %{"payment_method_id" => payment_method_id, "amount" => amount}) do
     api_key = System.get_env("STRIPE_SECRET_KEY")
 
@@ -47,33 +47,7 @@ defmodule PhoenixStripeWeb.StripeController do
     end
   end
 
-  def create_checkout_session(conn, params) do
-    api_key = System.get_env("STRIPE_SECRET_KEY")
-
-    {:ok, session} =
-      Stripe.Session.create(
-        %{
-          payment_method_types: ["card"],
-          line_items: [
-            %{
-              price_data: %{
-                currency: "usd",
-                product_data: %{name: "Sponsorship"},
-                unit_amount: String.to_integer(params["amount"]) * 100
-              },
-              quantity: 1
-            }
-          ],
-          mode: "payment",
-          success_url: url(conn, ~p"/?payment_status=success"),
-          cancel_url: url(conn, ~p"/?payment_status=cancelled")
-        },
-        api_key: api_key
-      )
-
-    json(conn, %{
-      id: session.id,
-      publishableKey: System.get_env("STRIPE_PUBLISHABLE_KEY")
-    })
+  def publishable_key(conn, _params) do
+    json(conn, %{publishableKey: System.get_env("STRIPE_PUBLISHABLE_KEY")})
   end
 end
