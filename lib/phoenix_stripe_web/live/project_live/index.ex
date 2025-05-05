@@ -3,7 +3,6 @@ defmodule PhoenixStripeWeb.ProjectLive.Index do
   alias PhoenixStripeWeb.ProjectLive.PaymentFormComponent
 
   def mount(_params, _session, socket) do
-    # Mock data for demonstration
     projects = [
       %{id: 1, name: "Project 1", description: "Description 1"},
       %{id: 2, name: "Project 2", description: "Description 2"}
@@ -14,7 +13,8 @@ defmodule PhoenixStripeWeb.ProjectLive.Index do
        projects: projects,
        show_payment_form: false,
        selected_project: nil,
-       selected_amount: nil
+       selected_amount: nil,
+       loading: false
      )}
   end
 
@@ -25,19 +25,19 @@ defmodule PhoenixStripeWeb.ProjectLive.Index do
      assign(socket, show_payment_form: true, selected_project: project, selected_amount: amount)}
   end
 
-  def handle_event("payment_succeeded", %{"project_id" => project_id, "amount" => amount}, socket) do
-    # Handle successful payment
-    {:noreply,
-     put_flash(socket, :info, "Payment of $#{amount} for Project #{project_id} was successful!")}
+  def handle_event("payment_succeeded", %{"amount" => amount}, socket) do
+    IO.inspect(amount, label: "success")
+
+    {:noreply, put_flash(socket, :info, "Payment of $#{amount} was successful!")}
   end
 
-  def handle_event("payment_failed", %{"project_id" => project_id, "error" => error}, socket) do
-    # Handle failed payment
-    {:noreply, put_flash(socket, :error, "Payment for Project #{project_id} failed: #{error}")}
+  def handle_event("payment_failed", %{"error" => error}, socket) do
+    {:noreply, put_flash(socket, :error, "Payment failed: #{error}")}
   end
 
   def render(assigns) do
     ~H"""
+    <.flash_group flash={@flash} />
     <div class="container mx-auto px-4 py-8">
       <h1 class="text-3xl font-bold mb-8">Projects</h1>
 
@@ -81,6 +81,7 @@ defmodule PhoenixStripeWeb.ProjectLive.Index do
           id="payment-form-component"
           project={@selected_project}
           amount={@selected_amount}
+          loading={@loading}
         />
       <% end %>
     </div>
