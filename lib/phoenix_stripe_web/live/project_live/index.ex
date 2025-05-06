@@ -23,14 +23,14 @@ defmodule PhoenixStripeWeb.ProjectLive.Index do
         name: "Feed the Hungry",
         description: "Contribute to food banks and hunger relief programs.",
         color: "bg-yellow-50 border-yellow-300",
-        icon: "🍎"
+        icon: "🍚"
       },
       %{
         id: 4,
         name: "Education for All",
         description: "Fund scholarships and educational resources for children.",
         color: "bg-purple-50 border-purple-300",
-        icon: "📚"
+        icon: "🧮"
       }
     ]
 
@@ -72,9 +72,9 @@ defmodule PhoenixStripeWeb.ProjectLive.Index do
     <.flash_group flash={@flash} />
     <div class="container mx-auto px-4 py-8">
       <h1 class="text-3xl font-bold mb-8 text-center">Support Social Good Projects</h1>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <%= for project <- @projects do %>
-          <div class={"max-w-md w-full rounded-2xl shadow-xl p-6 border #{project.color} flex flex-col items-center transition-transform hover:scale-105 bg-white min-h-[370px] mx-auto"}>
+          <div class={"max-w-md w-full rounded-2xl shadow-xl p-6 border #{project.color} flex flex-col justify-between items-center transition-transform hover:scale-105 bg-white min-h-[370px] mx-auto"}>
             <div class="text-6xl mb-3 drop-shadow-sm">{project.icon}</div>
             <h2 class="text-lg font-bold mb-1 text-center text-gray-900">{project.name}</h2>
             <p class="text-gray-700 mb-4 text-center text-sm">{project.description}</p>
