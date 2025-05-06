@@ -1,9 +1,8 @@
 const PaymentFormStripe = {
   async mounted() {
     const response = await fetch('/api/stripe-key');
-    const { publishableKey } = await response.json();
-    console.log("publishableKey", publishableKey);
-    const stripe = Stripe(publishableKey);
+    const { stripeKey } = await response.json();
+    const stripe = Stripe(stripeKey);
     const elements = stripe.elements();
     const card = elements.create('card');
     card.mount(this.el.querySelector('#card-element'));

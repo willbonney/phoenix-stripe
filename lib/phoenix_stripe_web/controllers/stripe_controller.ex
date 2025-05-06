@@ -1,7 +1,7 @@
 defmodule PhoenixStripeWeb.StripeController do
   use PhoenixStripeWeb, :controller
 
-  def get_client_secret(conn, _params) do
+  def create_setup_intent(conn, _params) do
     api_key = System.get_env("STRIPE_SECRET_KEY")
 
     case Stripe.SetupIntent.create(%{}, api_key: api_key) do
@@ -15,7 +15,6 @@ defmodule PhoenixStripeWeb.StripeController do
     end
   end
 
-  @spec create_payment_intent(any(), map()) :: Plug.Conn.t()
   def create_payment_intent(conn, %{"payment_method_id" => payment_method_id, "amount" => amount}) do
     api_key = System.get_env("STRIPE_SECRET_KEY")
 
@@ -47,7 +46,7 @@ defmodule PhoenixStripeWeb.StripeController do
     end
   end
 
-  def publishable_key(conn, _params) do
-    json(conn, %{publishableKey: System.get_env("STRIPE_PUBLISHABLE_KEY")})
+  def stripe_key(conn, _params) do
+    json(conn, %{stripeKey: System.get_env("STRIPE_PUBLISHABLE_KEY")})
   end
 end

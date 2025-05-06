@@ -7,7 +7,7 @@ sequenceDiagram
     participant Server as Phoenix Server (LiveView/Controller)
     participant Stripe as Stripe API
     Client->>Server: GET /api/stripe-key
-    Server-->>Client: { publishableKey from .env }
+    Server-->>Client: { stripeKey from .env }
     Note over Client: User fills payment form and clicks "Pay Now"
     Client->>Server: POST /api/create-setup-intent
     Server->>Stripe: Create SetupIntent (with secret key)
@@ -16,7 +16,7 @@ sequenceDiagram
     rect rgb(200, 150, 255)
     Note over Client: Bypass Server for PCI compliance
     Client->>Stripe: confirmCardSetup(client_secret, card details)
-    Stripe-->>Client: { setupIntent }
+    Stripe-->>Client: { payment_method_id }
     end
     Client->>Server: POST /api/create-payment-intent { payment_method_id, amount }
     Server->>Stripe: Create PaymentIntent (with secret key)
