@@ -21,7 +21,7 @@ sequenceDiagram
     Client->>Server: POST /api/create-payment-intent { payment_method_id, amount }
     Server->>Stripe: Create PaymentIntent (with secret key)
     Stripe-->>Server: PaymentIntent { status: succeeded/failed & payment_intent.id }
-    Server-->>Client: { status: succeeded/failed & payment_intent.id }
+    Server-->>Client: { status: succeeded/failed }
 ```
 
 First copy .env.example to .env and set the environment variables.

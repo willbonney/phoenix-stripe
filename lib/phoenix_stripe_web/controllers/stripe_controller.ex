@@ -25,7 +25,7 @@ defmodule PhoenixStripeWeb.StripeController do
              %{customer: customer.id, payment_method: payment_method_id},
              api_key: api_key
            ),
-         {:ok, payment_intent} <-
+         {:ok, _payment_intent} <-
            Stripe.PaymentIntent.create(
              %{
                amount: String.to_integer(amount) * 100,
@@ -37,7 +37,7 @@ defmodule PhoenixStripeWeb.StripeController do
              },
              api_key: api_key
            ) do
-      json(conn, %{status: "succeeded", payment_intent_id: payment_intent.id})
+      json(conn, %{status: "succeeded"})
     else
       {:error, error} ->
         conn
